@@ -198,6 +198,7 @@ def main() -> None:
             "ghostty-arm64-terminal",
             "mirror-macos-timezone",
             "macos-power-profile",
+            "shell-qtquick-611",
         ],
         "Omarchy backports are explicitly ordered and identified",
     )
@@ -210,7 +211,7 @@ def main() -> None:
         )
         check(
             backport.get("reference", "").startswith(
-                ("https://github.com/basecamp/omarchy/", "https://github.com/omacom/try-omarchy/",
+                ("https://github.com/basecamp/omarchy/", "https://github.com/omacom/omarchy/", "https://github.com/omacom/try-omarchy/",
                  "https://github.com/themartiano/try-omarchy/")
             ),
             f"backport has a public review reference: {backport['id']}",
@@ -2244,13 +2245,16 @@ HOTPLUG=1
             "background picker preserves directory order and sorts within each directory",
         )
 
+        expected_preimages = {}
         for backport in backports:
             for target in backport["targets"]:
+                before = expected_preimages.get(target['path'])
                 check(
-                    hashlib.sha256((source / target["path"]).read_bytes()).hexdigest()
+                    (before if before is not None else hashlib.sha256((source / target["path"]).read_bytes()).hexdigest())
                     == target["beforeSha256"],
-                    f"pinned source matches backport preimage: {backport['id']} {target['path']}",
+                    f"pinned source or prior backport matches preimage: {backport['id']} {target['path']}",
                 )
+                expected_preimages[target['path']] = target['afterSha256']
 
         with tempfile.TemporaryDirectory() as temporary:
             staged_root = Path(temporary) / "root"
@@ -2274,13 +2278,17 @@ HOTPLUG=1
                 text=True,
                 capture_output=True,
             )
-            for backport in backports:
-                for target in backport["targets"]:
-                    check(
-                        hashlib.sha256((staged_omarchy / target["path"]).read_bytes()).hexdigest()
-                        == target["afterSha256"],
-                        f"backport produces reviewed postimage: {backport['id']} {target['path']}",
-                    )
+            final_targets = {target['path']: target for backport in backports for target in backport['targets']}
+            for path, target in final_targets.items():
+                check(
+                    hashlib.sha256((staged_omarchy / path).read_bytes()).hexdigest() == target['afterSha256'],
+                    f"backports produce final reviewed postimage: {path}",
+                )
+            check(
+                all(re.search(r'^import QtQuick[^\S\r\n]*$', read(path), re.MULTILINE) is None
+                    for path in (staged_omarchy / 'shell').rglob('*.qml')),
+                'factory shell hides the Qt 6.12 Color type with explicit QtQuick imports',
+            )
 
             # Existing guests receive the same reviewed command and QML bytes
             # through the app's boot payload, without replacing their disk.
@@ -2300,11 +2308,16 @@ HOTPLUG=1
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(source / target["path"], destination)
             profile_installer.install(upgrade_root, profile_hooks)
+            def factory_power_preimage(path):
+                data = (staged_omarchy / path).read_bytes()
+                if path.endswith('.qml'):
+                    data = re.sub(rb'^import QtQuick 6\.11$', b'import QtQuick', data, flags=re.MULTILINE)
+                return data
             for hook, target in zip(profile_hooks, profile_backport["targets"]):
                 check(
                     (upgrade_root / hook["path"]).read_bytes()
-                    == (staged_omarchy / target["path"]).read_bytes(),
-                    f"power profile boot upgrade matches factory: {target['path']}",
+                    == factory_power_preimage(target['path']),
+                    f"power profile boot upgrade matches factory before the QtQuick repair: {target['path']}",
                 )
                 for previous in hook.get("previousVersions", []):
                     # Reconstruct the reviewed earlier presentation and exercise
@@ -2321,7 +2334,7 @@ HOTPLUG=1
                     profile_installer.install(upgrade_root, [hook])
                     check(
                         (upgrade_root / hook["path"]).read_bytes()
-                        == (staged_omarchy / target["path"]).read_bytes(),
+                        == factory_power_preimage(target['path']),
                         "earlier power profile presentation upgrades to the current macOS button",
                     )
 

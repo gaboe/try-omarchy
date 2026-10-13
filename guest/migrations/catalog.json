@@ -51,6 +51,13 @@
       "icon": "lock"
     },
     {
+      "id": "shell-qtquick",
+      "revision": 1,
+      "title": "Shell colors with Qt 6.12",
+      "icon": "paintpalette",
+      "note": "Repairs stock shell imports; customized files are preserved."
+    },
+    {
       "id": "clipboard",
       "revision": 1,
       "title": "Clipboard",

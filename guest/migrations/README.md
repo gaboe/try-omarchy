@@ -50,6 +50,29 @@ reviewed preimages, destination allowlist, dependencies, journal recovery, and
 per-component result. Package/kernel updates and biometric enablement are
 separate workflows.
 
+The `shell-qtquick` migration pins stock shell QML imports to `QtQuick 6.11`.
+Qt 6.12 adds a `Color` singleton that shadows Omarchy's palette.
+This ports the import workaround from [upstream PR #14845](https://github.com/omacom/omarchy/pull/14845)
+without requiring the newer Quickshell load-patch support.
+The factory delivers the same edit through the `shell-qtquick-611` backport.
+
+`python3 guest/scripts/generate-shell-qtquick-backport.py --source SOURCE`, run
+from the repository root, verifies the pinned
+upstream source digest and applies all prior factory backports before generating
+the patch, hashes, destination allowlist, and compressed QML test fixture.
+The fixture contains the 102 affected QML files before this backport.
+Its tar entries have fixed metadata, and its gzip timestamp is zero.
+Migration preimages include the pinned stock files, intermediate notification
+backports, and reviewed power-menu revisions.
+
+The boot runner preserves unknown files and unsafe destinations.
+It reports `current` for the same stock files repaired by hand with the plain
+`import QtQuick` to `import QtQuick 6.11` line rewrite.
+It repairs recognized files again after runtime package reinstallation.
+Power-menu and import changes share one journal entry per destination.
+The shell component reports `applied` when it repairs any eligible files, even
+if other files are preserved. It reports `preserved` when only unknown files remain.
+
 When extending a migration:
 
 - Keep its stable catalog ID and increase its revision when its repair changes.

@@ -61,12 +61,116 @@ LINKS = {
 EXTRA_FILES = {'omarchy-lock-password', 'repair-update-holds.py', 'components.py',
                'preimages.json', 'user-fixes.py', 'pinch-input.lua', 'power-profile-hooks.json', 'catalog.json'}
 HANDLED_COMPONENTS = frozenset(GROUPS) | {'clipboard', 'screensaver', 'alacritty',
-                                        'power', 'holds', 'lock', 'integrations', 'desktop'}
+                                        'power', 'holds', 'lock', 'integrations', 'desktop', 'shell-qtquick'}
+SHELL_TARGETS = frozenset({
+    'usr/share/omarchy/shell/Commons/Border.qml',
+    'usr/share/omarchy/shell/Commons/Color.qml',
+    'usr/share/omarchy/shell/Commons/Style.qml',
+    'usr/share/omarchy/shell/Commons/Util.qml',
+    'usr/share/omarchy/shell/Ui/BarIconButton.qml',
+    'usr/share/omarchy/shell/Ui/BarIndicator.qml',
+    'usr/share/omarchy/shell/Ui/BarWidget.qml',
+    'usr/share/omarchy/shell/Ui/BorderOverlay.qml',
+    'usr/share/omarchy/shell/Ui/BorderSurface.qml',
+    'usr/share/omarchy/shell/Ui/Button.qml',
+    'usr/share/omarchy/shell/Ui/ButtonGroup.qml',
+    'usr/share/omarchy/shell/Ui/ConfirmDialog.qml',
+    'usr/share/omarchy/shell/Ui/CursorSurface.qml',
+    'usr/share/omarchy/shell/Ui/Dropdown.qml',
+    'usr/share/omarchy/shell/Ui/KeyboardPanel.qml',
+    'usr/share/omarchy/shell/Ui/MultiSelect.qml',
+    'usr/share/omarchy/shell/Ui/NumberField.qml',
+    'usr/share/omarchy/shell/Ui/OpticalGlyph.qml',
+    'usr/share/omarchy/shell/Ui/Panel.qml',
+    'usr/share/omarchy/shell/Ui/PanelActionButton.qml',
+    'usr/share/omarchy/shell/Ui/PanelController.qml',
+    'usr/share/omarchy/shell/Ui/PanelHero.qml',
+    'usr/share/omarchy/shell/Ui/PanelKeyCatcher.qml',
+    'usr/share/omarchy/shell/Ui/PanelSectionHeader.qml',
+    'usr/share/omarchy/shell/Ui/PanelSeparator.qml',
+    'usr/share/omarchy/shell/Ui/PanelSlider.qml',
+    'usr/share/omarchy/shell/Ui/PanelToolTip.qml',
+    'usr/share/omarchy/shell/Ui/PluginBarApi.qml',
+    'usr/share/omarchy/shell/Ui/PointerMoveGate.qml',
+    'usr/share/omarchy/shell/Ui/PopupCard.qml',
+    'usr/share/omarchy/shell/Ui/ScreenMoveRemap.qml',
+    'usr/share/omarchy/shell/Ui/SearchableDropdown.qml',
+    'usr/share/omarchy/shell/Ui/SpeedTestOverlay.qml',
+    'usr/share/omarchy/shell/Ui/TextField.qml',
+    'usr/share/omarchy/shell/Ui/Toggle.qml',
+    'usr/share/omarchy/shell/Ui/ToggleSwitch.qml',
+    'usr/share/omarchy/shell/Ui/WidgetButton.qml',
+    'usr/share/omarchy/shell/plugins/agents/Agent.qml',
+    'usr/share/omarchy/shell/plugins/agents/Main.qml',
+    'usr/share/omarchy/shell/plugins/agents/Panel.qml',
+    'usr/share/omarchy/shell/plugins/background/Background.qml',
+    'usr/share/omarchy/shell/plugins/bar/Bar.qml',
+    'usr/share/omarchy/shell/plugins/bar/indicators/Dictation.qml',
+    'usr/share/omarchy/shell/plugins/bar/indicators/Dnd.qml',
+    'usr/share/omarchy/shell/plugins/bar/indicators/NightLight.qml',
+    'usr/share/omarchy/shell/plugins/bar/indicators/Reminder.qml',
+    'usr/share/omarchy/shell/plugins/bar/indicators/ScreenRecording.qml',
+    'usr/share/omarchy/shell/plugins/bar/indicators/StayAwake.qml',
+    'usr/share/omarchy/shell/plugins/bar/widgets/ActiveWindow.qml',
+    'usr/share/omarchy/shell/plugins/bar/widgets/Indicators.qml',
+    'usr/share/omarchy/shell/plugins/bar/widgets/KeyboardLayout.qml',
+    'usr/share/omarchy/shell/plugins/bar/widgets/Microphone.qml',
+    'usr/share/omarchy/shell/plugins/bar/widgets/Spacer.qml',
+    'usr/share/omarchy/shell/plugins/bar/widgets/SystemUpdate.qml',
+    'usr/share/omarchy/shell/plugins/bar/widgets/Tray.qml',
+    'usr/share/omarchy/shell/plugins/bar/widgets/Workspaces.qml',
+    'usr/share/omarchy/shell/plugins/clipboard/Clipboard.qml',
+    'usr/share/omarchy/shell/plugins/dev-gallery/GalleryPanel.qml',
+    'usr/share/omarchy/shell/plugins/emojis/Emojis.qml',
+    'usr/share/omarchy/shell/plugins/image-picker/ImagePicker.qml',
+    'usr/share/omarchy/shell/plugins/lock/LockView.qml',
+    'usr/share/omarchy/shell/plugins/lock/Service.qml',
+    'usr/share/omarchy/shell/plugins/menu/BarWidget.qml',
+    'usr/share/omarchy/shell/plugins/menu/Menu.qml',
+    'usr/share/omarchy/shell/plugins/notifications/Service.qml',
+    'usr/share/omarchy/shell/plugins/notifications/components/NotificationCard.qml',
+    'usr/share/omarchy/shell/plugins/osd/Osd.qml',
+    'usr/share/omarchy/shell/plugins/panels/audio/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/bluetooth/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/clock/BarWidget.qml',
+    'usr/share/omarchy/shell/plugins/panels/clock/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/disk-speedtest/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/dropbox/DropboxIcon.qml',
+    'usr/share/omarchy/shell/plugins/panels/dropbox/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/dropbox/Service.qml',
+    'usr/share/omarchy/shell/plugins/panels/monitor/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/network/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/power/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/speedtest/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/tailscale/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/tailscale/Service.qml',
+    'usr/share/omarchy/shell/plugins/panels/tailscale/TailscaleIcon.qml',
+    'usr/share/omarchy/shell/plugins/panels/weather/BarWidget.qml',
+    'usr/share/omarchy/shell/plugins/panels/weather/Panel.qml',
+    'usr/share/omarchy/shell/plugins/panels/wifiqr/Panel.qml',
+    'usr/share/omarchy/shell/plugins/polkit/PolkitAgent.qml',
+    'usr/share/omarchy/shell/plugins/reminders/ReminderFlow.qml',
+    'usr/share/omarchy/shell/plugins/services/battery/Service.qml',
+    'usr/share/omarchy/shell/plugins/services/idle/Service.qml',
+    'usr/share/omarchy/shell/plugins/services/media/BarWidget.qml',
+    'usr/share/omarchy/shell/plugins/services/media/Service.qml',
+    'usr/share/omarchy/shell/plugins/services/nightlight/Service.qml',
+    'usr/share/omarchy/shell/services/AppLibrary.qml',
+    'usr/share/omarchy/shell/services/BarWidgetRegistry.qml',
+    'usr/share/omarchy/shell/services/PluginAppLibraryApi.qml',
+    'usr/share/omarchy/shell/services/PluginBarStateApi.qml',
+    'usr/share/omarchy/shell/services/PluginBarWidgetRegistryApi.qml',
+    'usr/share/omarchy/shell/services/PluginFirstPartyServiceApi.qml',
+    'usr/share/omarchy/shell/services/PluginRegistry.qml',
+    'usr/share/omarchy/shell/services/PluginRegistryApi.qml',
+    'usr/share/omarchy/shell/services/PluginShellApi.qml',
+    'usr/share/omarchy/shell/shell.qml',
+})
 POWER_TARGETS = {'usr/bin/omarchy-powerprofiles-list', 'usr/bin/omarchy-powerprofiles-set',
                  'usr/share/omarchy/shell/plugins/panels/power/Panel.qml',
                  'usr/share/omarchy/shell/plugins/panels/power/Model.js',
                  'usr/share/omarchy/shell/plugins/menu/Menu.qml'}
-FIXED_TARGETS = {p for group in GROUPS.values() for p, _ in group.values()} | set(LINKS) | POWER_TARGETS | {
+FIXED_TARGETS = {p for group in GROUPS.values() for p, _ in group.values()} | set(LINKS) | POWER_TARGETS | SHELL_TARGETS | {
     'etc/pam.d/omarchy-lock-password', 'etc/pacman.conf', 'usr/share/try-omarchy/pacman.conf',
     'usr/local/bin/try-omarchy-integrations', 'usr/lib/systemd/system/try-omarchy-integrations.service',
 }
@@ -268,6 +372,9 @@ def plan(fixes, payload, root, uid):
                     if before is None:
                         continue
                     text = base64.b64decode(before['data']).decode()
+                    pinned = relative in SHELL_TARGETS and 'import QtQuick 6.11\n' in text
+                    if pinned:
+                        text = re.sub(r'^import QtQuick 6\.11$', 'import QtQuick', text, flags=re.MULTILINE)
                     sha = fixes.digest(text.encode())
                     if sha == hook['afterSha256']:
                         continue
@@ -280,6 +387,8 @@ def plan(fixes, payload, root, uid):
                         text = text.replace(old, new)
                     if fixes.digest(text.encode()) != hook['afterSha256']:
                         raise RuntimeError('Power plugin postimage mismatch')
+                    if pinned:
+                        text = re.sub(r'^import QtQuick[^\S\r\n]*$', 'import QtQuick 6.11', text, flags=re.MULTILINE)
                     add(group, relative, text.encode(), before['mode'], recognized=False)
             elif name == 'holds':
                 if (root / 'var/lib/pacman/db.lck').exists():
@@ -327,6 +436,31 @@ def plan(fixes, payload, root, uid):
             outcomes[name] = 'pending' if group else 'current'
         except (OSError, RuntimeError, ValueError):
             outcomes[name] = 'preserved'
+    pending, preserved = False, False
+    for relative in sorted(SHELL_TARGETS):
+        try:
+            before = fixes.snapshot(root / relative, root, uid)
+            if before is None:
+                continue
+            existing = next((c for c in changes if c['path'] == relative), None)
+            effective = existing['after'] if existing else before
+            data = base64.b64decode(effective['data'])
+            unpinned = re.sub(rb'^import QtQuick 6\.11$', b'import QtQuick', data, flags=re.MULTILINE)
+            if fixes.digest(unpinned) not in preimages.get(relative, []):
+                preserved = True
+                continue
+            repaired = re.sub(rb'^import QtQuick[^\S\r\n]*$', b'import QtQuick 6.11', data, flags=re.MULTILINE)
+            if repaired == data:
+                continue
+            after = {**effective, 'data': base64.b64encode(repaired).decode()}
+            if existing:
+                existing['after'] = after
+            else:
+                changes.append({'path': relative, 'before': before, 'after': after})
+            pending = True
+        except (OSError, RuntimeError, ValueError):
+            preserved = True
+    outcomes['shell-qtquick'] = 'pending' if pending else 'preserved' if preserved else 'current'
     return changes, outcomes
 
 
